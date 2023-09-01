@@ -13,7 +13,7 @@
 }
 
 .textbox{
-    @apply border-0 px-5 py-4 rounded-xl w-3/4 shadow-sm text-lg;
+    @apply border-0 px-5 py-4 rounded-xl w-3/4 shadow-md text-lg;
     @apply focus:outline-none;
 }
 
@@ -23,4 +23,8 @@
 }
 .btn:hover{
     background-color: #ff6a6a;
+}
+
+input[type='file']{
+    display: none;
 }
