@@ -113,7 +113,6 @@ export async function login(req, res) {
 /** GET: http://localhost:8080/user/example123 */
 export async function getUser(req, res) {
     const { username } = req.params;
-
     try {
         if (!username) {
             return res.status(400).send({ error: "Invalid Username" });
@@ -199,15 +198,10 @@ export async function verifyOTP(req, res) {
 // successfully redirect user when OTP is valid
 /** GET: http://localhost:8080/create-resetSession */
 export async function createResetSession(req, res) {
-    // if (req.app.locals.resetSession) {
-    //     return res.status(201).send({ flag: req.app.locals.resetSession });
-    // }
-    // return res.status(440).send({ error: "Session expired!" });
     if (req.app.locals.resetSession) {
-        req.app.locals.resetSession = false; //allow access to this route only once
-        return res.status(201).send({ msg: "access granted!" });
+        return res.status(201).send({ flag: req.app.locals.resetSession });
     }
-    return res.status(440).send({ error: "Session expired!" });
+    return res.status(401).send({ error: "Session expired!" });
 }
 
 // update the password when we have valid session

@@ -3,6 +3,8 @@ import cors from "cors";
 import morgan from "morgan";
 import connect from "./database/connection.js";
 import userRouter from "./routes/userRouter.js";
+import adminRouter from "./routes/adminRouter.js";
+import bodyParser from "body-parser";
 import ENV from "./config.js";
 
 const app = express();
@@ -11,6 +13,7 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 app.use(morgan("tiny"));
+app.use(bodyParser.json({ limit: '5mb' }));
 app.disable("x-powered-by"); //less hackers know about our stack
 
 
@@ -21,7 +24,7 @@ app.get("/", (req, res) => {
 
 /** api routes */
 app.use('/', userRouter);
-// app.use('/admin', adminRouter);
+app.use('/admin', adminRouter);
 
 /** start server when only we have a valid connection*/
 connect().then(() => {

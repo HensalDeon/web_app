@@ -15,12 +15,12 @@ export const UserSchema = new mongoose.Schema({
         required: [true, "Please provide a unique email"],
         unique: true,
     },
-    firstName: { type: String },
-    lastName: { type: String },
+    firstname: { type: String },
+    lastname: { type: String },
     mobile: { type: Number },
     address: { type: String },
     profile: { type: String },
+    status: { type: Boolean, default: true },
 });
 
-
-export default mongoose.model.Users || mongoose.model('User', UserSchema);
+export default mongoose.model.Users || mongoose.model("User", UserSchema);

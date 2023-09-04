@@ -1,8 +1,18 @@
 import axios from "axios";
-import { Promise } from "mongoose";
+import { Promise } from "es6-promise";
+import jwt_decode from "jwt-decode";
+
 axios.defaults.baseURL = process.env.REACT_APP_SERVER_DOMAIN;
 
 /** Make API Requests */
+
+/** To get username from Token */
+export async function getUsername() {
+    const token = localStorage.getItem("token");
+    if (!token) return Promise.reject("Cannot find Token");
+    let decode = jwt_decode(token);
+    return decode;
+}
 
 /** AUthenticate function  */
 export async function authenticate(username) {
@@ -15,7 +25,7 @@ export async function authenticate(username) {
 
 /** get User details */
 export async function getUser({ username }) {
-    try {
+        try {
         const { data } = await axios.get(`/user/${username}`);
         return { data };
     } catch (error) {
@@ -57,7 +67,7 @@ export async function verifyPassword({ username, password }) {
 }
 
 /** update user profile function */
-export async function updatedUser(response) {
+export async function updateUser(response) {
     try {
         const token = await localStorage.getItem("token");
         const data = await axios.put("/update-user", response, { headers: { Authorization: `Bearer ${token}` } });
@@ -70,10 +80,7 @@ export async function updatedUser(response) {
 /** generate OTP */
 export async function generateOTP(username) {
     try {
-        const {
-            data: { code },
-            status,
-        } = await axios.get("/generateOTP", { params: username });
+        const { data: { code }, status} = await axios.get("/generateOTP", { params: {username} });
 
         /** send mail with the OTP */
         if (status === 201) {
