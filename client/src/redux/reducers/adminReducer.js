@@ -9,7 +9,7 @@ export const adminUsersReducer = (state = initialState, action) => {
         case "FETCH_USERS_START":
             return {
                 ...state,
-                isLoading: true,    
+                isLoading: true,
                 error: null,
             };
 
@@ -28,7 +28,27 @@ export const adminUsersReducer = (state = initialState, action) => {
                 error: action.payload,
             };
 
-        // ... Other cases for edit, delete, add, and search as before
+        case "SEARCH_USERS_START":
+            return {
+                ...state,
+                isLoading: true,
+                error: null,
+            };
+
+        case "SEARCH_USERS_SUCCESS":
+            return {
+                ...state,
+                isLoading: false,
+                searchResults: action.payload,
+                error: null,
+            };
+
+        case "SEARCH_USERS_FAILURE":
+            return {
+                ...state,
+                isLoading: false,
+                error: action.payload,
+            };
 
         default:
             return state;

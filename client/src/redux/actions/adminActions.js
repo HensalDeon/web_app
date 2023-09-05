@@ -1,11 +1,4 @@
-import { getUsersList } from "../../helper/adminAxios";
-
-export const AdminActionTypes = {
-    EDIT_USER: "EDIT_USER",
-    DELETE_USER: "DELETE_USER",
-    ADD_USER: "ADD_USER",
-    SEARCH_USERS: "SEARCH_USERS",
-};
+import { getUsersList, searchUser } from "../../helper/adminAxios";
 
 export const fetchUsersStart = () => ({
     type: "FETCH_USERS_START",
@@ -29,7 +22,35 @@ export const fetchUsers = (users) => {
                 dispatch(fetchUsersSuccess(response));
             })
             .catch((error) => {
-                dispatch(fetchUsersFailure(error.message)); // Dispatch with a specific error message
+                dispatch(fetchUsersFailure(error.message));
             });
     };
 };
+
+export const searchUsersStart = () => ({
+    type: "SEARCH_USERS_START",
+});
+
+export const searchUsersSuccess = (users) => ({
+    type: "SEARCH_USERS_SUCCESS",
+    payload: users,
+});
+
+export const searchUsersFailure = (error) => ({
+    type: "SEARCH_USERS_FAILURE",
+    payload: error,
+});
+
+export const searchUsers = (search) => {
+    return (dispatch) => {
+        dispatch(searchUsersStart());
+        searchUser(search)
+            .then((response) => {
+                dispatch(searchUsersSuccess(response));
+            })
+            .catch((error) => {
+                dispatch(searchUsersFailure(error.message));
+            });
+    };
+};
+
