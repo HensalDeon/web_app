@@ -10,18 +10,28 @@ import Recovery from "./Components/Recovery";
 import Reset from "./Components/Reset";
 import PageNotFound from "./Components/PageNotFound";
 import AdminLayout from "./Components/Admin/AdminLayout";
+import AdminLogin from "./Components/Admin/AdminLogin";
 
 /** auth middlewares */
-import { AuthorizeUser, ProtectRoute } from "./middleware/auth";
+import { AuthorizeAdmin, ProtectUserRoute, AuthorizeUser, ProtectAdminRoute, ProtectRoute } from "./middleware/auth";
+
 /** root Routes */
 const router = createBrowserRouter([
     {
         path: "/",
-        element: <Username />,
+        element: (
+            <ProtectUserRoute>
+                <Username />,
+            </ProtectUserRoute>
+        ),
     },
     {
-        path: "/admin",
-        element: <AdminLayout />,
+        path: "/admin-login",
+        element: (
+            <ProtectAdminRoute>
+                <AdminLogin />
+            </ProtectAdminRoute>
+        ),
     },
     {
         path: "/password",
@@ -44,6 +54,14 @@ const router = createBrowserRouter([
         ),
     },
     {
+        path: "/admin",
+        element: (
+            <AuthorizeAdmin>
+                <AdminLayout />
+            </AuthorizeAdmin>
+        ),
+    },
+    {
         path: "/recovery",
         element: <Recovery />,
     },
@@ -56,7 +74,6 @@ const router = createBrowserRouter([
         element: <PageNotFound />,
     },
 ]);
-console.log("Route Configuration:", router);
 export default function App() {
     return (
         <main>

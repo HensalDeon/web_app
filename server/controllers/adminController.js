@@ -1,4 +1,33 @@
 import UserModel from "../model/User.model.js";
+import jwt from "jsonwebtoken";
+import ENV from "../config.js";
+
+export async function adminLogin(req, res) {
+    try {
+        const { adminName, password } = req.body;
+
+        if (adminName === ENV.ADMIN_NAME && password === ENV.ADMIN_PASSWORD) {
+            // Create a JWT token
+            const token = jwt.sign(
+                {
+                    adminId: ENV.ADMIN_NAME,
+                },
+                ENV.JWT_SECRET,
+                { expiresIn: "1h" }
+            );
+            console.log(token);
+            return res.status(200).send({
+                msg: "Login Successful...!",
+                token,
+            });
+        }else{
+            return res.status(401).send({ error: "Invalid credentials" });
+        }
+    } catch (error) {
+        console.error("Error during login:", error);
+        return res.status(500).send({ error: "Internal Server Error" });
+    }
+}
 
 export async function getUserList(req, res) {
     try {
@@ -64,7 +93,6 @@ export async function deleteUser(req, res) {
         res.status(500).send("Internal Server Error");
     }
 }
-
 
 export async function enableUser(req, res) {
     try {

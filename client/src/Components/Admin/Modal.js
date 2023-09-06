@@ -6,10 +6,13 @@ import avatar from "../../assets/profile.png";
 import { updateUser } from "../../helper/adminAxios";
 
 function Modal({ user, closeModal }) {
-
+    const specialChars = /[`!@#$%^&*()_+|=\-[\]{};':"\\,.<>/?~]/;
     const validationSchema = Yup.object().shape({
         username: Yup.string().required("Username is required"),
-        email: Yup.string().email("Invalid email").required("Email is required"),
+        email: Yup.string()
+            .email("Invalid email")
+            .required("Email is required")
+            .matches(specialChars, "Enter a valid email"),
         firstname: Yup.string(),
         lastname: Yup.string(),
     });
@@ -24,16 +27,14 @@ function Modal({ user, closeModal }) {
         },
         validationSchema,
         onSubmit: async (values) => {
-            let updatePromise = updateUser(values,user._id);
+            let updatePromise = updateUser(values, user._id);
             toast.promise(updatePromise, {
                 loading: "Updating...",
                 success: <b>Updated Successfully...!</b>,
                 error: <b>Could not Update!</b>,
-            })
+            });
         },
     });
-
-    
 
     return (
         <>

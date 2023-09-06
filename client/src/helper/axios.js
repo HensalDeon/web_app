@@ -50,7 +50,7 @@ export async function registerUser(credentials) {
 
         return Promise.resolve(msg);
     } catch (error) {
-        Promise.reject({ error });
+       return Promise.reject({ error });
     }
 }
 

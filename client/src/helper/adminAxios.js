@@ -49,3 +49,14 @@ export async function enableUser(userId) {
         return Promise.reject(error);
     }
 }
+
+export async function verifyAdmin({ adminName, password }) {
+    try {
+        if (adminName) {
+            const { data } = await axios.post(`${baseURL}/admin-login`, { adminName, password });
+            return Promise.resolve({ data });
+        }
+    } catch (error) {
+        return Promise.reject({ error: "Password doesn't match...!" });
+    }
+}

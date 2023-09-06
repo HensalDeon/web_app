@@ -33,24 +33,19 @@ export async function verifyUser(req, res, next) {
 export async function register(req, res) {
     try {
         const { username, password, profile, email } = req.body;
-        console.log(req.body);
 
-        // Check if the username already exists
         const existingUsername = await UserModel.findOne({ username }).exec();
         if (existingUsername) {
             return res.status(400).send({ error: "Please use a unique username" });
         }
 
-        // Check if the email already exists
         const existingEmail = await UserModel.findOne({ email }).exec();
         if (existingEmail) {
             return res.status(400).send({ error: "Please use a unique email" });
         }
 
-        // Hash the password
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        // Create a new user document
         const newUser = new UserModel({
             username,
             password: hashedPassword,

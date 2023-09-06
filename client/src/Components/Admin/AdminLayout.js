@@ -8,12 +8,18 @@ import Loader from "../Loader";
 import avatar from "../../assets/profile.png";
 import Modal from "./Modal";
 import DeleteModal from "./DeleteModal";
+import AddUserModal from "./AddUserModal";
 import { enableUser } from "../../helper/adminAxios";
+import { updateProfileImage } from "../../redux/actions/userActions";
+import admin from "../../assets/admin.jpg"
+import { useNavigate } from "react-router-dom";
 
 function AdminLayout() {
+    const navigate = useNavigate()
     const [search, setSearch] = useState("");
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [dltModalOpen, setdltModalOpen] = useState(false);
+    const [addModal, setAddModal] = useState(false);
     const [userDetails, setUserDetails] = useState({});
     const [userId, setuserId] = useState({});
     const users = useSelector((state) => state.adminUsers.users);
@@ -22,10 +28,27 @@ function AdminLayout() {
     const dispatch = useDispatch();
     const { fetchUsers, searchUsers } = bindActionCreators(adminActionCreators, dispatch);
 
+    const [showLogout, setShowLogout] = useState(false);
+
+    // Function to toggle the visibility of the logout button
+    const toggleLogout = () => {
+        setShowLogout(!showLogout);
+    };
+
+    // Function to handle logout
+    const handleLogout = () => {
+        localStorage.removeItem("adminToken");
+        navigate("/admin-login");
+    };
+
     useEffect(() => {
         fetchUsers();
     }, []);
 
+    const handleAddUser = () => {
+        updateProfileImage(null);
+        setAddModal(true);
+    };
     const handleEdit = (userDetail) => {
         setUserDetails(userDetail);
         setIsModalOpen(true);
@@ -38,29 +61,28 @@ function AdminLayout() {
 
     const handleEnable = async (userId) => {
         try {
-          let response = await enableUser(userId);
-          if(response) {
-            toast.success("Enabled Succesfully!");
-            fetchUsers()
-          }
-      } catch (error) {
-        toast.error("Something went Wrong!")
-        console.log(error);
-      }
+            let response = await enableUser(userId);
+            if (response) {
+                toast.success("Enabled Succesfully!");
+                fetchUsers();
+                searchUsers(search);
+            }
+        } catch (error) {
+            toast.error("Something went Wrong!");
+            console.log(error);
+        }
     };
-
-    
 
     const handleSearch = () => {
         searchUsers(search);
     };
+
 
     const displayData = searchResults ? searchResults : users;
 
     return (
         <div className="overflow-x-auto">
             <Toaster position="top-center" reverseOrder={false} />
-
             {isModalOpen && (
                 <Modal
                     user={userDetails}
@@ -74,50 +96,91 @@ function AdminLayout() {
             {dltModalOpen && (
                 <DeleteModal
                     userId={userId}
+                    search={search}
                     closeModal={() => {
                         setdltModalOpen(false);
                     }}
                 />
             )}
+            {addModal && (
+                <AddUserModal
+                    closeModal={() => {
+                        setAddModal(false);
+                    }}
+                />
+            )}
             {!isLoading ? (
                 <>
-                    <div className="relative rounded-full bg-white my-5 px-6 pt-2 pb-2 shadow-xl ring-1 ring-gray-900/5 sm:mx-auto sm:max-w-sm sm:px-10">
-                        <div className="mx-auto max-w-md">
-                            <form
-                                action=""
-                                className="mr-auto w-max"
-                                onSubmit={(e) => {
-                                    e.preventDefault();
-                                    handleSearch();
-                                }}
-                            >
-                                <input
-                                    type="search"
-                                    value={search}
-                                    onChange={(e) => {
-                                        setSearch(e.target.value);
+                    <div className="flex">
+                        <div className="relative rounded-full bg-white my-5 px-6 pt-2 pb-2 shadow-xl ring-1 ring-gray-900/5 sm:mx-auto sm:max-w-sm sm:px-10">
+                            <div className="mx-auto max-w-md">
+                                <form
+                                    action=""
+                                    className="mr-auto w-max"
+                                    onSubmit={(e) => {
+                                        e.preventDefault();
+                                        handleSearch();
                                     }}
-                                    className="peer cursor-pointer relative z-10 h-12 w-12 rounded-full border bg-transparent pl-12 outline-none focus:w-full focus:cursor-text focus:border-lime-600 focus:pl-16 focus:pr-4"
-                                />
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    className="absolute inset-y-0 my-auto h-8 w-12 border-r border-transparent stroke-gray-500 px-3.5 peer-focus:border-lime-300 peer-focus:stroke-lime-500"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    stroke="currentColor"
-                                    strokeWidth="2"
                                 >
-                                    <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                                    <input
+                                        type="search"
+                                        value={search}
+                                        onChange={(e) => {
+                                            setSearch(e.target.value);
+                                        }}
+                                        className="peer cursor-pointer relative z-10 h-12 w-12 rounded-full border bg-transparent pl-12 outline-none focus:w-full focus:cursor-text focus:border-lime-600 focus:pl-16 focus:pr-4"
                                     />
-                                </svg>
-                            </form>
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        className="absolute inset-y-0 my-auto h-8 w-12 border-r border-transparent stroke-gray-500 px-3.5 peer-focus:border-lime-300 peer-focus:stroke-lime-500"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke="currentColor"
+                                        strokeWidth="2"
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                                        />
+                                    </svg>
+                                </form>
+                            </div>
+                        </div>
+                        <div className="relative">
+                            <div
+                                className="w-14 h-14 rounded-full overflow-hidden m-3"
+                                onClick={toggleLogout}
+                            >
+                                <img src={admin} alt="Admin Profile" className="w-full h-full object-cover" />
+                            </div>
+                            {showLogout && (
+                                <button
+                                    className="absolute mt-2 mr-2 bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 text-white px-2 py-1 rounded shadow"
+                                    onClick={handleLogout}
+                                >
+                                    Logout
+                                </button>
+                            )}
                         </div>
                     </div>
 
-                    <div className="min-w-screen min-h-screen flex items-center justify-center font-sans overflow-hidden">
+                    <button
+                        onClick={handleAddUser}
+                        className="ml-[8%] bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 hover:from-red-500 hover:via-pink-500 hover:to-purple-400 text-white font-semibold py-2 px-4 rounded-full shadow-lg transform hover:scale-105 transition-all duration-300 flex items-center space-x-2"
+                    >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="w-4 h-4"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                        >
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
+                        </svg>
+                        Add User
+                    </button>
+                    <div className="min-w-screen  flex items-center justify-center font-sans overflow-hidden">
                         <div className="w-full lg:w-5/6">
                             <div className="bg-white shadow-md rounded my-6">
                                 <table className="min-w-max w-full table-auto">

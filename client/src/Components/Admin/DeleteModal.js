@@ -5,10 +5,9 @@ import { adminActionCreators } from "../../redux/index";
 import toast, { Toaster } from "react-hot-toast";
 import { deleteUser } from "../../helper/adminAxios";
 
-export default function DeleteModal({ userId, closeModal }) {
-    console.log(userId);
+export default function DeleteModal({userId,search, closeModal }) {
     const dispatch = useDispatch();
-    const { fetchUsers } = bindActionCreators(adminActionCreators, dispatch);
+    const { fetchUsers,searchUsers } = bindActionCreators(adminActionCreators, dispatch);
 
     const handledeleteUser = async (userId) => {
         try {
@@ -17,6 +16,7 @@ export default function DeleteModal({ userId, closeModal }) {
             if (response.status === 200) {
                 toast.success("User deleted successfully");
                 fetchUsers();
+                searchUsers(search)
                 closeModal();
             } else {
                 toast.error("Failed to delete user");
