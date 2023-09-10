@@ -42,7 +42,10 @@ export const ProtectAdminRoute = ({ children }) => {
 
 export const ProtectRoute = ({ children }) => {
     const username = useSelector((state) => state.userReducer.username);
-
+  //   const token = localStorage.getItem("token");
+  //   if (!token) {
+  //     return <Navigate to={"/"} replace={true} />;
+  // }
     if (!username) {
         return <Navigate to={"/profile"} replace={true}></Navigate>;
     }

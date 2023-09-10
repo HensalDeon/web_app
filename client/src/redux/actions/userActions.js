@@ -21,7 +21,7 @@ export const setOTP = (OTP) => {
 export const fetchUserDetails = (username) => {
     return async (dispatch) => {
         dispatch({ type: "FETCH_USER_DETAILS_REQUEST" });
-
+        
         try {
             const userDetails = await getUser({ username: username });
 

@@ -11,24 +11,30 @@ import DeleteModal from "./DeleteModal";
 import AddUserModal from "./AddUserModal";
 import { enableUser } from "../../helper/adminAxios";
 import { updateProfileImage } from "../../redux/actions/userActions";
-import admin from "../../assets/admin.jpg"
+import admin from "../../assets/admin.jpg";
 import { useNavigate } from "react-router-dom";
 
 function AdminLayout() {
-    const navigate = useNavigate()
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+
     const [search, setSearch] = useState("");
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [dltModalOpen, setdltModalOpen] = useState(false);
     const [addModal, setAddModal] = useState(false);
     const [userDetails, setUserDetails] = useState({});
+    const [showLogout, setShowLogout] = useState(false);
     const [userId, setuserId] = useState({});
+
     const users = useSelector((state) => state.adminUsers.users);
     const searchResults = useSelector((state) => state.adminUsers.searchResults);
     const isLoading = useSelector((state) => state.adminUsers.isLoading);
-    const dispatch = useDispatch();
+
     const { fetchUsers, searchUsers } = bindActionCreators(adminActionCreators, dispatch);
 
-    const [showLogout, setShowLogout] = useState(false);
+    useEffect(() => {
+        fetchUsers();
+    }, []);
 
     // Function to toggle the visibility of the logout button
     const toggleLogout = () => {
@@ -41,24 +47,25 @@ function AdminLayout() {
         navigate("/admin-login");
     };
 
-    useEffect(() => {
-        fetchUsers();
-    }, []);
-
+    // Function to handle User Creation
     const handleAddUser = () => {
         updateProfileImage(null);
         setAddModal(true);
     };
+
+    // Function to handle user editing
     const handleEdit = (userDetail) => {
         setUserDetails(userDetail);
         setIsModalOpen(true);
     };
 
+    // Funciton to handle user deletion(soft delete)
     const handleDelete = (userId) => {
         setuserId(userId);
         setdltModalOpen(true);
     };
 
+    // Function to handle user Unblock
     const handleEnable = async (userId) => {
         try {
             let response = await enableUser(userId);
@@ -73,10 +80,10 @@ function AdminLayout() {
         }
     };
 
+    // Function to handle user Search
     const handleSearch = () => {
         searchUsers(search);
     };
-
 
     const displayData = searchResults ? searchResults : users;
 
@@ -148,10 +155,7 @@ function AdminLayout() {
                             </div>
                         </div>
                         <div className="relative">
-                            <div
-                                className="w-14 h-14 rounded-full overflow-hidden m-3"
-                                onClick={toggleLogout}
-                            >
+                            <div className="w-14 h-14 rounded-full overflow-hidden m-3" onClick={toggleLogout}>
                                 <img src={admin} alt="Admin Profile" className="w-full h-full object-cover" />
                             </div>
                             {showLogout && (
@@ -251,6 +255,7 @@ function AdminLayout() {
                                                         {!user.status && (
                                                             <button
                                                                 onClick={() => handleEnable(user._id)}
+                                                                onMouseOver={()=>{ }}
                                                                 className="w-4 mr-2 transform hover:text-purple-500 hover:scale-110"
                                                             >
                                                                 <svg

@@ -34,6 +34,14 @@ const router = createBrowserRouter([
         ),
     },
     {
+        path: "/profile",
+        element: (
+            <AuthorizeUser>
+                <Profile />
+            </AuthorizeUser>
+        ),
+    },
+    {
         path: "/password",
         element: (
             <ProtectRoute>
@@ -44,14 +52,6 @@ const router = createBrowserRouter([
     {
         path: "/register",
         element: <Register />,
-    },
-    {
-        path: "/profile",
-        element: (
-            <AuthorizeUser>
-                <Profile />
-            </AuthorizeUser>
-        ),
     },
     {
         path: "/admin",

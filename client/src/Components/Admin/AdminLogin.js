@@ -29,7 +29,7 @@ export default function AdminLogin() {
                 }),
                 {
                     loading: "Checking...",
-                    success: (result) => {
+                    success: () => {
                         return <b>Login Successfull...!</b>;
                     },
                     error: <b>Wrong Password!</b>,
