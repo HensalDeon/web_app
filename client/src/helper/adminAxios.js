@@ -1,7 +1,7 @@
 import axios from "axios";
 import { Promise } from "es6-promise";
 
-const baseURL = "http://localhost:8080/admin";
+const baseURL = "http://localhost:8080/api/admin";
 
 /** Make API Requests */
 

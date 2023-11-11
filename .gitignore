@@ -2,12 +2,15 @@
 
 # dependencies
 client/node_modules
+client/build
 server/node_modules
+server/build
 server/config.js
 server/.env
 server/.env
 /.pnp
 .pnp.js
+build
 
 # testing
 /coverage
